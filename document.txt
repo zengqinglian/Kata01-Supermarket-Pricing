@@ -1,0 +1,35 @@
+There is saintsbury next to my company.
+I had a look their system. this is how the checkout works.
+
+1. System scans product you are going to buy, system displays total price without considering any discount or speical offer.
+2. when you click checkout button and chose payment method, system calculate the real price you need to pay on the screen.
+
+The programe uses the same approach to calculate the total price.
+
+Scaner should work as a client. one supermarker will have many self service scaner for example.
+when user click checkout, scanner sends products user is going to buy to central pricing system.
+Pricing system calculated the price and send back to user.
+
+The implementation is focusing on how pricing system should work togther with discount rules. 
+So sending products to pricing system is not included. 
+The total price sending back to user is not included.
+The client side scaner is not included.
+
+
+Other Assumption
+1. Assume one product can have more than one discount rule.
+2. The rule at front of list has higher priority. When user set up these rule from configuration mode, they can specify those rules order.
+
+Mulit-threading.
+
+The pricingManagerImpl is a stateless class, there is not any concurrent issue.
+The only concurrent issue we might have is when someone is checking out and configuration is changing. 
+
+
+
+Improvement
+Besides support default type of discount, system should be able to support any user defined discount.
+To support lunchBox deal - any sandwich *1 , any crisp *1 , any coke *1 = x pounds
+Performance improvement - there are too many loop in checkout method
+Multithreading approach.
+
