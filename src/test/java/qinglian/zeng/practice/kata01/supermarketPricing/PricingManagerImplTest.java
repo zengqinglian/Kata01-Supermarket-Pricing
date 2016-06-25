@@ -67,6 +67,18 @@ public class PricingManagerImplTest
     private static final SellingType PIECE = SellingType.PIECES;
     private static final SellingType WEIGHT = SellingType.WEIGHT;
 
+    private static final long NODISCOUNT_TOTALPRICE = 1650;
+    private static final long APPLE_BUYONEGETONE_TOTAL = 1800;
+    private static final long APPLE_THREEFORTWO_TOTAL = 1950;
+    private static final long APPLE_BUTONEGETONEHALF = 1875;
+    private static final long APPLE_HALFPRICE_PIECE = 1725;
+    private static final long APPLE_HALFPRICE_WEIGHT = 1525;
+
+    private static final long SANDWICH_GROUP_DEAL_3ITEMS_TOTAL = 1450;
+    private static final long SANDWICH_GROUP_DEAL_4ITEMS_TOTAL = 1700;
+
+    private static final long DEAL_COMBINATION_TEST_TOTAL = 1825;
+
     private PricingManagerImpl pm = new PricingManagerImpl();
 
     private Product<DiscountForPieces> packedApple;
@@ -128,7 +140,7 @@ public class PricingManagerImplTest
 
     @Test
     public void calculatePriceNoDiscount() {
-        assertEquals( 1650, pm.checkOut( productsForCheckOut ) );
+        assertEquals( NODISCOUNT_TOTALPRICE, pm.checkOut( productsForCheckOut ) );
     }
 
     @Test
@@ -137,28 +149,28 @@ public class PricingManagerImplTest
         packedApple.cleanOffers();
         productsForCheckOut.put( packedApple, 3 );
         packedApple.addOffer( buyOneGetOneFree );
-        assertEquals( 1800, pm.checkOut( productsForCheckOut ) );
+        assertEquals( APPLE_BUYONEGETONE_TOTAL, pm.checkOut( productsForCheckOut ) );
 
         // three for two
         packedApple.cleanOffers();
         initlial();
         productsForCheckOut.put( packedApple, 4 );
         packedApple.addOffer( threeForTwo );
-        assertEquals( 1950, pm.checkOut( productsForCheckOut ) );
+        assertEquals( APPLE_THREEFORTWO_TOTAL, pm.checkOut( productsForCheckOut ) );
 
         // buy one get one half price
         packedApple.cleanOffers();
         initlial();
         productsForCheckOut.put( packedApple, 3 );
         packedApple.addOffer( buyOneGetOneHalfPrice );
-        assertEquals( 1875, pm.checkOut( productsForCheckOut ) );
+        assertEquals( APPLE_BUTONEGETONEHALF, pm.checkOut( productsForCheckOut ) );
 
         // half price piece
         packedApple.cleanOffers();
         initlial();
         productsForCheckOut.put( packedApple, 3 );
         packedApple.addOffer( halfPricePiece );
-        assertEquals( 1725, pm.checkOut( productsForCheckOut ) );
+        assertEquals( APPLE_HALFPRICE_PIECE, pm.checkOut( productsForCheckOut ) );
 
         // half price weight
         packedApple.cleanOffers();
@@ -166,20 +178,20 @@ public class PricingManagerImplTest
         productsForCheckOut.put( packedApple, 1 );
         looseApple.cleanOffers();
         looseApple.addOffer( halfPriceWeight );
-        assertEquals( 1525, pm.checkOut( productsForCheckOut ) );
+        assertEquals( APPLE_HALFPRICE_WEIGHT, pm.checkOut( productsForCheckOut ) );
 
     }
 
     @Test
     public void calculatePriceWithGroupOffer() {
         anyThreeGroup.addOffer( sandwichGroupDeal );
-        assertEquals( 1450, pm.checkOut( productsForCheckOut ) );
+        assertEquals( SANDWICH_GROUP_DEAL_3ITEMS_TOTAL, pm.checkOut( productsForCheckOut ) );
 
         // test higher price product will be consider first
         initlial();
         productsForCheckOut.put( sandwichC, 2 );
         // 150*1+100*2.5+450+600+250 - sandwich a will be the one left after group offer
-        assertEquals( 1700, pm.checkOut( productsForCheckOut ) );
+        assertEquals( SANDWICH_GROUP_DEAL_4ITEMS_TOTAL, pm.checkOut( productsForCheckOut ) );
 
     }
 
@@ -192,7 +204,7 @@ public class PricingManagerImplTest
 
         // buy one get one half price first then group offer
         // 150*1+100*2.5+450+250+250/2 +600
-        assertEquals( 1825, pm.checkOut( productsForCheckOut ) );
+        assertEquals( DEAL_COMBINATION_TEST_TOTAL, pm.checkOut( productsForCheckOut ) );
     }
 
     private void initlial() {
