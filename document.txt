@@ -41,5 +41,5 @@ Improvement
 Besides support default type of discount, system should be able to support any user defined discount.
 To support lunchBox deal - any sandwich *1 , any crisp *1 , any coke *1 = x pounds
 Performance improvement - there are too many loop in checkout method
-Multithreading approach.
+Multithreading approach TODO: finish schedule task updating configuration functionality
 
