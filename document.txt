@@ -1,3 +1,5 @@
+System Design
+
 There is saintsbury next to my company.
 I had a look their system. this is how the checkout works.
 
@@ -10,13 +12,16 @@ Scaner should work as a client. one supermarker will have many self service scan
 when user click checkout, scanner sends products user is going to buy to central pricing system.
 Pricing system calculated the price and send back to user.
 
+Out of Scope
+
 The implementation is focusing on how pricing system should work togther with discount rules. 
 So sending products to pricing system is not included. 
 The total price sending back to user is not included.
 The client side scaner is not included.
 
 
-Other Assumption
+Assumption
+
 1. Assume one product can have more than one discount rule.
 2. The rule at front of list has higher priority. When user set up these rule from configuration mode, they can specify those rules order.
 
@@ -24,7 +29,12 @@ Mulit-threading.
 
 The pricingManagerImpl is a stateless class, there is not any concurrent issue.
 The only concurrent issue we might have is when someone is checking out and configuration is changing. 
+I won't assume the supermarket will change the configuration during the daytime busy shopping time. 
+Even we set the read and write lock to protect all the mutable property in product and product group, it is not a best solution.
+Since before customer do checkout, if we change configuration the price will be different from what customer picked up the product to basket.
 
+The good design can be
+Set up a schedule task, stop checkout function at night for 5 secs and update all the setting at that pause period.
 
 
 Improvement

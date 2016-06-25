@@ -84,7 +84,7 @@ public class PricingManagerImplTest
 
     private GroupBuyDiscount sandwichGroupDeal;
 
-    private Map<Product, Number> productsForCheckOut = new HashMap<>();
+    private Map<Product<?>, Number> productsForCheckOut = new HashMap<>();
 
     @Before
     public void setUp() {
@@ -120,7 +120,7 @@ public class PricingManagerImplTest
 
     @Test
     public void calculatePriceForEmptyBucket() {
-        Map<Product, Number> emptyBuckets = new HashMap<>();
+        Map<Product<?>, Number> emptyBuckets = new HashMap<>();
         assertEquals( 0, pm.checkOut( emptyBuckets ) );
 
         assertEquals( 0, pm.checkOut( null ) );

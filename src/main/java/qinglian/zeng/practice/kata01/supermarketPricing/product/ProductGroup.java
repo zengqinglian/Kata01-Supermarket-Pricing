@@ -1,14 +1,15 @@
 package qinglian.zeng.practice.kata01.supermarketPricing.product;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import qinglian.zeng.practice.kata01.supermarketPricing.product.Product.SellingType;
+import qinglian.zeng.practice.kata01.supermarketPricing.specialOffer.DiscountForPieces;
 import qinglian.zeng.practice.kata01.supermarketPricing.specialOffer.GroupBuyDiscount;
 
 import com.sun.istack.internal.NotNull;
@@ -17,8 +18,8 @@ public class ProductGroup
 {
     private final int id;
     private String name;
-    private Set<Product> products = new HashSet<>();
-    private List<GroupBuyDiscount> offers = new ArrayList<>();
+    private Set<Product<DiscountForPieces>> products = new HashSet<>();
+    private List<GroupBuyDiscount> offers = new CopyOnWriteArrayList<>();
 
     public ProductGroup( int id, @NotNull String name ) {
         this.id = id;
@@ -33,11 +34,11 @@ public class ProductGroup
         this.name = name;
     }
 
-    public Set<Product> getProducts() {
+    public Set<Product<DiscountForPieces>> getProducts() {
         return products;
     }
 
-    public void addProducts( Product product ) {
+    public void addProducts( Product<DiscountForPieces> product ) {
         if( product.getType() == SellingType.PIECES ) {
             this.products.add( product );
             product.setGroup( this );
@@ -52,6 +53,11 @@ public class ProductGroup
 
     public void addOffer( GroupBuyDiscount offer ) {
         offers.add( offer );
+
+    }
+
+    public void removeOffer( GroupBuyDiscount offer ) {
+        offers.remove( offer );
     }
 
     public int getId() {

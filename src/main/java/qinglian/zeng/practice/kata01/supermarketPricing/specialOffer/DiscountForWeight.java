@@ -11,7 +11,7 @@ import com.sun.istack.internal.NotNull;
 public class DiscountForWeight
 {
     private final int id;// rule id
-    private final Set<Product> products = new HashSet<>();
+    private final Set<Product<DiscountForWeight>> products = new HashSet<>();
     private DiscountType type;
 
     public DiscountForWeight( int id, @NotNull DiscountType type ) {
@@ -31,19 +31,23 @@ public class DiscountForWeight
         return id;
     }
 
-    public Set<Product> getProducts() {
+    public Set<Product<DiscountForWeight>> getProducts() {
         return products;
     }
 
-    public void addProduct( Product product ) {
+    public void addProduct( Product<DiscountForWeight> product ) {
         if( product.getType() == SellingType.WEIGHT ) {
             products.add( product );
+            product.addOffer( this );
         } else {
             throw new UnsupportedOperationException();
         }
     }
 
     public void clearProducts() {
+        for( Product<DiscountForWeight> product : products ) {
+            product.removeOffer( this );
+        }
         products.clear();
     }
 

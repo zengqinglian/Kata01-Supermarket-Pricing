@@ -1,7 +1,7 @@
 package qinglian.zeng.practice.kata01.supermarketPricing.product;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -15,7 +15,7 @@ public class Product<E>
     private final String name;
     private long unitPrice; // price in pence
     private final SellingType type;
-    private List<E> offers = new ArrayList<>();// Discount will be considered in order
+    private List<E> offers = new CopyOnWriteArrayList<>();// Discount will be considered in order.
     private ProductGroup group; // TODO: many-to-many
 
     public Product( int id, String name, long unitPrice, SellingType type ) {

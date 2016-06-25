@@ -19,15 +19,20 @@ import qinglian.zeng.practice.kata01.supermarketPricing.specialOffer.GroupBuyDis
 public class PricingManagerImpl implements PricingManager
 {
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see qinglian.zeng.practice.kata01.supermarketPricing.PricingManager#checkOut(java.util.Map)
+     */
     @Override
-    public long checkOut( Map<Product, Number> products ) {
+    public long checkOut( Map<Product<?>, Number> products ) {
         if( products == null || products.isEmpty() ) {
             return 0;
         }
         long totalPrice = 0;
         Set<ProductGroup> groups = new HashSet<>();
 
-        for( Entry<Product, Number> pair : products.entrySet() ) {
+        for( Entry<Product<?>, Number> pair : products.entrySet() ) {
             if( pair.getKey().getOffers().isEmpty()
                     && (pair.getKey().getGroup() == null || pair.getKey().getGroup().getOffers().isEmpty()) ) {
                 totalPrice += calcualtePrice( pair );
@@ -43,13 +48,13 @@ public class PricingManagerImpl implements PricingManager
         // TODO: reduce the loop. find out all necessary info from first loop.
         for( ProductGroup group : groups ) {
             List<GroupBuyDiscount> offers = group.getOffers();
-            SortedMap<Product, Integer> map = findProductNumberFromGroup( group, products );
+            SortedMap<Product<?>, Integer> map = findProductNumberFromGroup( group, products );
             for( GroupBuyDiscount offer : offers ) {
                 totalPrice += getPriceForGroupOffer( offer, map, products );
             }
         }
 
-        for( Entry<Product, Number> pair : products.entrySet() ) {
+        for( Entry<Product<?>, Number> pair : products.entrySet() ) {
             if( pair.getKey().getType() == Product.SellingType.PIECES && pair.getValue().intValue() > 0 ) {
                 totalPrice += calcualtePrice( pair );
                 pair.setValue( 0 );
@@ -59,13 +64,13 @@ public class PricingManagerImpl implements PricingManager
         return totalPrice;
     }
 
-    private long getPriceForGroupOffer( GroupBuyDiscount offer, SortedMap<Product, Integer> map, Map<Product, Number> products ) {
+    private long getPriceForGroupOffer( GroupBuyDiscount offer, SortedMap<Product<?>, Integer> map, Map<Product<?>, Number> products ) {
         long total = 0;
         boolean match = true;
         while( match ) {
             int groupProductNumber = 0;
-            List<Product> groupList = new ArrayList<>();
-            for( Entry<Product, Integer> entry : map.entrySet() ) {
+            List<Product<?>> groupList = new ArrayList<>();
+            for( Entry<Product<?>, Integer> entry : map.entrySet() ) {
                 if( entry.getValue() > 0 ) {
                     groupProductNumber += entry.getValue();
                     groupList.add( entry.getKey() );
@@ -78,7 +83,7 @@ public class PricingManagerImpl implements PricingManager
                 match = false;
             } else {
                 int remain = offer.getTotalPieces();
-                for( Product product : groupList ) {
+                for( Product<?> product : groupList ) {
                     int piece = products.get( product ).intValue();
                     if( piece >= remain ) {
                         products.put( product, piece - remain );
@@ -98,11 +103,11 @@ public class PricingManagerImpl implements PricingManager
     }
 
     // consider highest price first
-    private SortedMap<Product, Integer> findProductNumberFromGroup( ProductGroup group, Map<Product, Number> products ) {
-        SortedMap<Product, Integer> map = new TreeMap<>( new Comparator<Product>() {
+    private SortedMap<Product<?>, Integer> findProductNumberFromGroup( ProductGroup group, Map<Product<?>, Number> products ) {
+        SortedMap<Product<?>, Integer> map = new TreeMap<>( new Comparator<Product<?>>() {
 
             @Override
-            public int compare( Product o1, Product o2 ) {
+            public int compare( Product<?> o1, Product<?> o2 ) {
                 if( o1.getUnitPrice() - o2.getUnitPrice() > 0 ) {
                     return -1;
                 } else if( o1.getUnitPrice() - o2.getUnitPrice() < 0 ) {
@@ -113,7 +118,7 @@ public class PricingManagerImpl implements PricingManager
             }
 
         } );
-        for( Product product : group.getProducts() ) {
+        for( Product<?> product : group.getProducts() ) {
             if( products.get( product ).intValue() > 0 ) {
                 map.put( product, products.get( product ).intValue() );
             }
@@ -121,7 +126,7 @@ public class PricingManagerImpl implements PricingManager
         return map;
     }
 
-    private long calcualtePrice( Entry<Product, Number> pair ) {
+    private long calcualtePrice( Entry<Product<?>, Number> pair ) {
         if( pair.getKey().getType() == Product.SellingType.PIECES ) {
 
             return pair.getKey().getUnitPrice() * pair.getValue().intValue();
@@ -134,10 +139,11 @@ public class PricingManagerImpl implements PricingManager
         return 0;
     }
 
-    private long calculateDiscount( Entry<Product, Number> pair ) {
+    private long calculateDiscount( Entry<Product<?>, Number> pair ) {
         int total = 0;
         if( pair.getKey().getType() == Product.SellingType.PIECES ) {
-            List<DiscountForPieces> offers = pair.getKey().getOffers();
+            Product<DiscountForPieces> product = (Product<DiscountForPieces>) pair.getKey();
+            List<DiscountForPieces> offers = product.getOffers();
             for( DiscountForPieces offer : offers ) {
                 while( pair.getValue().intValue() >= offer.getType().getReducePieces() ) {
                     pair.setValue( pair.getValue().intValue() - offer.getType().getReducePieces() );
@@ -145,7 +151,8 @@ public class PricingManagerImpl implements PricingManager
                 }
             }
         } else if( pair.getKey().getType() == Product.SellingType.WEIGHT ) {
-            List<DiscountForWeight> offers = pair.getKey().getOffers();
+            Product<DiscountForWeight> product = (Product<DiscountForWeight>) pair.getKey();
+            List<DiscountForWeight> offers = product.getOffers();
             for( DiscountForWeight offer : offers ) {
                 if( pair.getValue().doubleValue() >= 0 && pair.getValue().doubleValue() > offer.getType().getMinWeight() ) {
                     total += offer.getType().getTotalPrice( pair.getKey().getUnitPrice(), pair.getValue().doubleValue() );

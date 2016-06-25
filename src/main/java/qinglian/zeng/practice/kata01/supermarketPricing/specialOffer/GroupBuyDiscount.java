@@ -59,6 +59,7 @@ public class GroupBuyDiscount
 
     public void addProductGroup( ProductGroup productGroup ) {
         productGroups.add( productGroup );
+        productGroup.addOffer( this );
     }
 
     public void setTotalPrice( long totalPrice ) {
@@ -66,6 +67,9 @@ public class GroupBuyDiscount
     }
 
     public void clearProductGroups() {
+        for( ProductGroup productGroup : productGroups ) {
+            productGroup.removeOffer( this );
+        }
         productGroups.clear();
     }
 
