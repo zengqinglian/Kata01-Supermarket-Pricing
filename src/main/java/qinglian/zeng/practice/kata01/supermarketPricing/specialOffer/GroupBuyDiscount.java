@@ -3,12 +3,11 @@ package qinglian.zeng.practice.kata01.supermarketPricing.specialOffer;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import qinglian.zeng.practice.kata01.supermarketPricing.product.ProductGroup;
-
-import com.sun.istack.internal.NotNull;
 
 public class GroupBuyDiscount
 {
@@ -22,7 +21,10 @@ public class GroupBuyDiscount
     private long totalPrice;
     private String name;
 
-    public GroupBuyDiscount( int id, @NotNull String name, @NotNull int totalPieces, @NotNull int totalPrice ) {
+    public GroupBuyDiscount( int id, String name, int totalPieces, int totalPrice ) {
+        Validate.notNull( name, "Name can not be null" );
+        Validate.notNull( totalPieces, "Total piece type can not be null" );
+        Validate.notNull( totalPrice, "Total price can not be null" );
         this.name = name;
         this.id = id;
         this.totalPieces = totalPieces;

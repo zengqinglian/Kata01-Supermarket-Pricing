@@ -5,14 +5,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import qinglian.zeng.practice.kata01.supermarketPricing.product.Product.SellingType;
 import qinglian.zeng.practice.kata01.supermarketPricing.specialOffer.DiscountForPieces;
 import qinglian.zeng.practice.kata01.supermarketPricing.specialOffer.GroupBuyDiscount;
-
-import com.sun.istack.internal.NotNull;
 
 public class ProductGroup
 {
@@ -21,7 +20,8 @@ public class ProductGroup
     private Set<Product<DiscountForPieces>> products = new HashSet<>();
     private List<GroupBuyDiscount> offers = new CopyOnWriteArrayList<>();
 
-    public ProductGroup( int id, @NotNull String name ) {
+    public ProductGroup( int id, String name ) {
+        Validate.notNull( name, "name can not be null" );
         this.id = id;
         this.name = name;
     }

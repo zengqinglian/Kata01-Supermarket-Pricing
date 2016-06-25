@@ -3,10 +3,10 @@ package qinglian.zeng.practice.kata01.supermarketPricing.specialOffer;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang.Validate;
+
 import qinglian.zeng.practice.kata01.supermarketPricing.product.Product;
 import qinglian.zeng.practice.kata01.supermarketPricing.product.Product.SellingType;
-
-import com.sun.istack.internal.NotNull;
 
 public class DiscountForWeight
 {
@@ -14,7 +14,8 @@ public class DiscountForWeight
     private final Set<Product<DiscountForWeight>> products = new HashSet<>();
     private DiscountType type;
 
-    public DiscountForWeight( int id, @NotNull DiscountType type ) {
+    public DiscountForWeight( int id, DiscountType type ) {
+        Validate.notNull( type, "Discount type can not be null" );
         this.id = id;
         this.type = type;
     }
